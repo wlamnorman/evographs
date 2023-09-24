@@ -1,67 +1,58 @@
 import random
-import copy
 from graph_structure import Graph, Node
+from tqdm import tqdm
 
 
-def moran_model_simulation(
-    graph: Graph, generations: int, selection_intensity: float, mutation_rate: float
-):
-    """
-    Simulate the Moran model on a graph for a specified number of generations.
+class InvalidIntensityError(Exception):
+    """Raised when selection intensity is outside [0, 1]."""
 
-    Parameters:
-        graph (Graph): The initial population graph.
-        generations (int): The number of generations to simulate.
-        selection_intensity (float): The selection intensity parameter.
-        mutation_rate (float): The mutation rate parameter.
-
-    Returns:
-        List[Graph]: A list of Graph objects representing the state of the population at each generation.
-    """
-    population_history = [graph.copy()]  # Initialize a list to store population states
-
-    for _ in range(generations):
-        # Selection and Reproduction
-        next_generation = reproduce_population(
-            graph, selection_intensity, mutation_rate
+    def __init__(self, selection_intensity):
+        super().__init__(
+            f"Intensity value {selection_intensity} is outside the range [0, 1]."
         )
 
-        # Update Graph with the new generation
-        graph = next_generation
 
-        # Store the state of the population
-        population_history.append(graph.copy())
+def moran_model_simulation(graph: Graph, generations: int, selection_intensity: float):
+    """
+    Simulate the (spatial) Moran model on a graph for a specified number of generations.
 
+    Parameters:
+        graph: The initial population graph.
+        generations: The number of generations to simulate.
+        selection_intensity: The selection intensity parameter.
+        mutation_rate: The mutation rate parameter.
+
+    Returns:
+        A list of Graph objects representing the state of the population at each generation.
+    """
+    if not (0 <= selection_intensity <= 1):
+        raise InvalidIntensityError(selection_intensity)
+
+    population_history = [graph.copy()]
+    for _ in tqdm(range(generations)):
+        next_generation = reproduce_population(graph, selection_intensity)
+        population_history.append((graph := next_generation).copy())
     return population_history
 
 
-def reproduce_population(
-    graph: Graph, selection_intensity: float, mutation_rate: float
-):
+def reproduce_population(graph: Graph, selection_intensity: float):
     """
-    Reproduce the population on the graph based on selection and mutation.
+    Reproduce the population on the graph based on selection.
 
     Parameters:
-        graph (Graph): The current population graph.
-        selection_intensity (float): The selection intensity parameter.
-        mutation_rate (float): The mutation rate parameter.
+        graph: The current population graph.
+        selection_intensity: The selection intensity parameter.
 
     Returns:
-        Graph: The population graph representing the next generation.
+        The population graph representing the next generation.
     """
-    # Create a new graph to represent the next generation
     next_generation = graph.copy()
-
-    for node in graph.nodes:
-        # Calculate fitness based on genotype (you can define your fitness function here)
-        fitness = calculate_fitness(node.genotype)
-
-        # Selection: Choose an individual for reproduction probabilistically
-        selected_node = select_individual(graph, fitness, selection_intensity)
-
-        # Mutation: Apply mutation with the specified mutation rate
-        if random.random() < mutation_rate:
-            mutate_node(selected_node)
+    selected_node = select_individual(graph)
+    neighbor_candidates = list(graph.nodes[selected_node])
+    if neighbor_candidates:
+        # chose neighbor uniformly who should inherit the selected nodes genotype
+        replaced_neighbor = random.choice(neighbor_candidates)
+        next_generation.nodes[replaced_neighbor] = [Node(selected_node.genotype)]
 
     return next_generation
 
@@ -71,49 +62,27 @@ def calculate_fitness(genotype: str):
     Calculate the fitness of an individual based on its genotype.
 
     Parameters:
-        genotype (str): The genotype of an individual.
+        genotype: The genotype of an individual.
 
     Returns:
         float: The fitness value.
     """
-    # Define your fitness function here based on the genotype
-    # Example: Fitness proportional to the length of the genotype
+    # TODO: Add proper fitness function based on match-up outcomes between genotypes
     return len(genotype)
 
 
-def select_individual(graph: Graph, fitness: float, selection_intensity: float):
+def select_individual(graph: Graph):
     """
-    Select an individual probabilistically for reproduction based on fitness and selection intensity.
+    Select an individual probabilistically (probabilities proportional to fitness) for reproduction.
 
     Parameters:
-        graph (Graph): The current population graph.
-        fitness (float): The fitness value of the individual.
-        selection_intensity (float): The selection intensity parameter.
+        graph: The current population graph.
 
     Returns:
         Node: The selected individual for reproduction.
     """
-    # Implement your selection algorithm here
-    # Example: Use roulette wheel selection
-    total_fitness = sum(calculate_fitness(node.genotype) for node in graph.nodes)
-    selection_probabilities = [
-        calculate_fitness(node.genotype) / total_fitness for node in graph.nodes
-    ]
+    fitness_values = [calculate_fitness(node.genotype) for node in graph.nodes]
+    total_fitness = sum(fitness_values)
+    selection_probabilities = [fitness / total_fitness for fitness in fitness_values]
     selected_node = random.choices(list(graph.nodes), selection_probabilities)[0]
-
     return selected_node
-
-
-def mutate_node(node: Node):
-    """
-    Mutate the genotype of an individual.
-
-    Parameters:
-        node (Node): The individual to mutate.
-    """
-    # Implement your mutation logic here
-    # Example: Randomly change a character in the genotype
-    index_to_mutate = random.randint(0, len(node.genotype) - 1)
-    new_genotype = list(node.genotype)
-    new_genotype[index_to_mutate] = random.choice("ACGT")
-    node.genotype = "".join(new_genotype)

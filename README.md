@@ -1,6 +1,12 @@
 # Evographs
 Starting of as a repository to explore algorithms on graphs with the intention of considering how populations evolve over time with a population structure determined by the graph.
 
+## Implemented:
+* (spatial) Moran model on a `Graph` defined in `graph_structure.py`. See `moran_model.py`.
+
+## :beetle: Bugs :bug: to fix:
+* Reproduction / copy bug where the population size grows exponentially (it should stay constant).
+
 ## To be implemented:
-* Spatial Moran model for populations with multiple strategies.
-* Possibility to visualise the evolution of the graph over generations (and hopefully to save these as visualisations).
+* Fitness function based on given payoff matrix.
+* Possibility to visualise the evolution of the graph over generations.
