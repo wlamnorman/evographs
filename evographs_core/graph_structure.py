@@ -28,12 +28,12 @@ class Node:
     _next_id: int = 1  # class-level variable to track the next available ID
 
     def __init__(self, genotype: str, node_id: int | None = None):
-        if node_id is not None and not isinstance(node_id, int):
-            raise ValueError("Node ID must be an integer.")
-
         if node_id is None:
             node_id = Node._next_id
             Node._next_id += 1
+
+        if node_id is not None and not isinstance(node_id, int):
+            raise ValueError("Node ID must be an integer.")
 
         self.genotype = genotype
         self.node_id = node_id
