@@ -7,15 +7,6 @@ class NodeNotInGraphError(Exception):
         super().__init__(message)
 
 
-class InvalidIntensityError(Exception):
-    """Raised when selection intensity is outside [0, 1]."""
-
-    def __init__(self, selection_intensity):
-        super().__init__(
-            f"Intensity value {selection_intensity} is outside the range [0, 1]."
-        )
-
-
 def display_node(self, indent=2):
     """Display information about the node with indentation."""
     indentation: str = " " * indent
