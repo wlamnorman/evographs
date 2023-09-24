@@ -48,12 +48,13 @@ def reproduce_population(graph: Graph, selection_intensity: float):
     """
     next_generation = graph.copy()
     selected_node = select_individual(graph)
+
+    # choose neighbor uniformly who should inherit the selected node's genotype
     neighbor_candidates = list(graph.nodes[selected_node])
     if neighbor_candidates:
-        # chose neighbor uniformly who should inherit the selected nodes genotype
-        replaced_neighbor = random.choice(neighbor_candidates)
-        next_generation.nodes[replaced_neighbor] = [Node(selected_node.genotype)]
-
+        replaced_neighbor_node_id = random.choice(neighbor_candidates)
+        replaced_neighbor = graph.node_id_to_node[replaced_neighbor_node_id]
+        replaced_neighbor.genotype = selected_node.genotype
     return next_generation
 
 
