@@ -87,7 +87,7 @@ class Graph:
     def add_node(self, node: Node):
         """Adds a node if not present and checks for unique node IDs."""
         if node.node_id in self.node_ids:
-            raise ValueError(f"Node ID {node.node_id} is not unique.")
+            raise ValueError(f"Node ID {node.node_id} already exists in graph.")
         self.node_ids.add(node.node_id)
         if node not in self.nodes:
             self.nodes[node] = []
