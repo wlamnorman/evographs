@@ -5,7 +5,7 @@ Starting of as a repository to explore algorithms on graphs with the intention o
 * (spatial) Moran model on a `Graph` defined in `graph_structure.py`. See `moran_model.py`.
 
 ## :beetle: Bugs :bug: to fix:
-* Reproduction / copy bug where the population size grows exponentially (it should stay constant).
+* Reproduction / copy bug where the population doubles each generation (it should stay constant).
 
 ## To be implemented:
 * Fitness function based on given payoff matrix.
