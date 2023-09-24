@@ -18,13 +18,14 @@ class InvalidIntensityError(Exception):
 
 def display_node(self, indent=2):
     """Display information about the node with indentation."""
-    print(" " * indent + f"(ID: {self.node_id}, Genotype: {self.genotype})")
+    indentation: str = " " * indent
+    print(f"{indentation}ID: {self.node_id}, Genotype: {self.genotype}")
 
 
 class Node:
     """Represents a node with a genotype and a unique integer ID."""
 
-    _next_id = 1  # Class-level variable to track the next available ID
+    _next_id: int = 1  # class-level variable to track the next available ID
 
     def __init__(self, genotype: str, node_id: int | None = None):
         if node_id is not None and not isinstance(node_id, int):
@@ -106,7 +107,7 @@ class Graph:
         indentation = " " * indent
         print(f"{indentation}Edge: ({node_id1}, {node_id2})")
 
-    def display_graph(self, indent=2):
+    def display(self, indent=2):
         """Display information about the entire graph, including nodes and edges with indentation."""
         indentation = " " * indent
 
@@ -120,6 +121,7 @@ class Graph:
             node_id = node.node_id
             for adj_node in adj_nodes:
                 adj_node_id = adj_node.node_id
-                # Ensure each edge is displayed only once (assuming an undirected graph)
+                # ensure each edge is displayed only once in ascending order
+                # with respect to node_id (assuming an undirected graph)
                 if node_id < adj_node_id:
-                    print(f"{indentation}Edge: ({node_id}, {adj_node_id})")
+                    print(f"{indentation}({node_id}, {adj_node_id})")
