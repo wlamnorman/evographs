@@ -42,6 +42,10 @@ class Node:
         """Display information about the node with indentation."""
         display_node(self, indent)
 
+    def copy(self):
+        """Create a deep copy of the node."""
+        return Node(self.genotype, self.node_id)
+
 
 class Graph:
     """
@@ -98,6 +102,16 @@ class Graph:
             self.nodes[node2].append(node1)
         else:
             raise NodeNotInGraphError(node_id1, node_id2)
+
+    def copy(self):
+        """Create a deep copy of the graph."""
+        copied_graph = Graph([], [])
+        copied_nodes = {node.copy(): [] for node in self.nodes}
+        for node, adj_list in self.nodes.items():
+            copied_adj_list = [copied_nodes[neighbor] for neighbor in adj_list]
+            copied_nodes[node] = copied_adj_list
+        copied_graph.nodes = copied_nodes
+        return copied_graph
 
     def display_edge(self, node_id1: int, node_id2: int, indent=2):
         """Display information about a specific edge by the IDs of the connected nodes with indentation."""
