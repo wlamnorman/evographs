@@ -1,0 +1,11 @@
+# Mac directory config
+.DS_Store
+
+# Compiled python modules
+*.pyc
+
+# Notebook checkpoints
+*.ipynb_checkpoints
+*.ipynb
+
+__pycache__
