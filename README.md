@@ -8,5 +8,10 @@ Starting of as a repository to explore algorithms on graphs with the intention o
 None at the moment.
 
 ## To be implemented
+* `MoranModel` class
 * Proper fitness function based on given payoff matrix and proportion of strategies.
-* Possibility to visualise the evolution of the graph over generations.
+
+* Visualisation
+    - evolution of the graph over generations.
+    - fitness over generations
+    - proportion of strategies over generations.
