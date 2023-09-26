@@ -29,6 +29,10 @@ class Node:
         self.genotype = genotype
         self.node_id = node_id
 
+    @classmethod
+    def reset_next_id(cls):
+        cls._next_id = 1
+
     def display(self, indent=2):
         """Display information about the node with indentation."""
         display_node(self, indent)
@@ -74,6 +78,9 @@ class Graph:
 
         for node_id1, node_id2 in edges:
             self.add_edge(node_id1, node_id2)
+
+        # reset the _next_id for each new graph instance
+        Node.reset_next_id()
 
     def add_node(self, node: Node):
         """Adds a node if not present and checks for unique node IDs."""
