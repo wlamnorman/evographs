@@ -1,5 +1,5 @@
 import random
-from graph_structure import Graph, Node
+from graph_structure import Graph
 from tqdm import tqdm
 
 
@@ -30,8 +30,8 @@ def moran_model_simulation(graph: Graph, generations: int, selection_intensity: 
 
     population_history = [graph.copy()]
     for _ in tqdm(range(generations)):
-        next_generation = reproduce_population(graph, selection_intensity)
-        population_history.append((graph := next_generation).copy())
+        next_generation = reproduce_population(graph.copy(), selection_intensity)
+        population_history.append(next_generation)
     return population_history
 
 
