@@ -2,7 +2,7 @@ VERSION = "1.0"
 AUTHOR = "William Norman"
 
 # imports
-from .graph_structure import Graph, Node
+from .graph import Graph, Node
 
 # EX
 # from .simulation_runner import run_simulation
