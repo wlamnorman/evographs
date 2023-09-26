@@ -34,7 +34,7 @@ class Node:
         display_node(self, indent)
 
     def copy(self):
-        """Create a deep copy of the node."""
+        """Create a shallow copy of the node."""
         return Node(self.genotype, self.node_id)
 
 
@@ -97,11 +97,14 @@ class Graph:
     def copy(self):
         """Create a deep copy of the graph."""
         copied_graph = Graph([], [])
-        copied_nodes = {node.copy(): [] for node in self.nodes}
-        for node, adj_list in self.nodes.items():
-            copied_adj_list = [copied_nodes[neighbor] for neighbor in adj_list]
-            copied_nodes[node] = copied_adj_list
-        copied_graph.nodes = copied_nodes
+        copied_graph.nodes = {
+            node.copy(): [neighbor.copy() for neighbor in adj_list]
+            for node, adj_list in self.nodes.items()
+        }
+        copied_graph.node_ids = {node_id for node_id in self.node_ids}
+        copied_graph.node_id_to_node = {
+            k: v.copy() for k, v in self.node_id_to_node.items()
+        }
         return copied_graph
 
     def display_edge(self, node_id1: int, node_id2: int, indent=2):
