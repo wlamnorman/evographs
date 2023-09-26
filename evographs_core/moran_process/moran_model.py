@@ -40,18 +40,18 @@ def reproduce_population(graph: Graph, selection_intensity: float):
         The population graph representing the next generation.
     """
     next_generation = graph.copy()
-    selected_node = select_individual(graph)
+    selected_node = select_individual(graph, selection_intensity)
 
     # choose neighbor uniformly who should inherit the selected node's genotype
     neighbor_candidates = list(graph.nodes[selected_node])
     if neighbor_candidates:
-        replaced_neighbor_node_id = random.choice(neighbor_candidates)
-        replaced_neighbor = graph.node_id_to_node[replaced_neighbor_node_id]
+        replaced_neighbor_node_id = random.choice(neighbor_candidates).node_id
+        replaced_neighbor = next_generation.node_id_to_node[replaced_neighbor_node_id]
         replaced_neighbor.genotype = selected_node.genotype
     return next_generation
 
 
-def calculate_fitness(genotype: str):
+def calculate_fitness(genotype: str, selection_intensity: float):
     """
     Calculate the fitness of an individual based on its genotype.
 
@@ -65,7 +65,7 @@ def calculate_fitness(genotype: str):
     return len(genotype)
 
 
-def select_individual(graph: Graph):
+def select_individual(graph: Graph, selection_intensity: float):
     """
     Select an individual probabilistically (probabilities proportional to fitness) for reproduction.
 
@@ -75,7 +75,9 @@ def select_individual(graph: Graph):
     Returns:
         Node: The selected individual for reproduction.
     """
-    fitness_values = [calculate_fitness(node.genotype) for node in graph.nodes]
+    fitness_values = [
+        calculate_fitness(node.genotype, selection_intensity) for node in graph.nodes
+    ]
     total_fitness = sum(fitness_values)
     selection_probabilities = [fitness / total_fitness for fitness in fitness_values]
     selected_node = random.choices(list(graph.nodes), selection_probabilities)[0]
