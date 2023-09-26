@@ -3,15 +3,6 @@ from graph_structure import Graph
 from tqdm import tqdm
 
 
-class InvalidIntensityError(Exception):
-    """Raised when selection intensity is outside [0, 1]."""
-
-    def __init__(self, selection_intensity):
-        super().__init__(
-            f"Intensity value {selection_intensity} is outside the range [0, 1]."
-        )
-
-
 def moran_model_simulation(graph: Graph, generations: int, selection_intensity: float):
     """
     Simulate the (spatial) Moran model on a graph for a specified number of generations.
@@ -26,7 +17,9 @@ def moran_model_simulation(graph: Graph, generations: int, selection_intensity: 
         A list of Graph objects representing the state of the population at each generation.
     """
     if not (0 <= selection_intensity <= 1):
-        raise InvalidIntensityError(selection_intensity)
+        raise ValueError(
+            f"Selection intensity: {selection_intensity} is outside the range [0, 1]"
+        )
 
     population_history = [graph.copy()]
     for _ in tqdm(range(generations)):
