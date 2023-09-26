@@ -7,7 +7,7 @@ class NodeNotInGraphError(Exception):
         super().__init__(message)
 
 
-def display_node(self, indent=2):
+def _display_node(self, indent=2):
     """Display information about the node with indentation."""
     indentation: str = " " * indent
     print(f"{indentation}ID: {self.node_id}, Genotype: {self.genotype}")
@@ -35,7 +35,7 @@ class Node:
 
     def display(self, indent=2):
         """Display information about the node with indentation."""
-        display_node(self, indent)
+        _display_node(self, indent)
 
     def copy(self):
         """Create a shallow copy of the node."""
@@ -134,7 +134,7 @@ class Graph:
         print("Nodes:")
         for node in self.node_ids:
             node = self.node_id_to_node[node]
-            display_node(node, indent=indent)
+            _display_node(node, indent=indent)
 
         print("Edges:")
         for node, adj_nodes in self.nodes.items():
