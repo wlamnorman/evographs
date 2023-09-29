@@ -108,15 +108,6 @@ class Graph:
         else:
             raise NodeNotInGraphError(node_id1, node_id2)
 
-    @staticmethod
-    def _label_n_genotypes(n: int) -> list[str]:
-        """Returns a list ['A', 'B', ...,] to the n;ths letter."""
-        if n > 26:
-            raise ValueError("No support for n>26.")
-        if n < 1:
-            raise ValueError("At least one genotype is required.")
-        return list(string.ascii_uppercase[: n + 1])
-
     @classmethod
     def generate_random_graph(
         cls, n_nodes: int, n_genotypes: int, edge_probability: float
@@ -196,3 +187,12 @@ class Graph:
             self.genotype_valuecounts[genotype] += count_change
         else:  # for tracking newly introduced genotypes
             self.genotype_valuecounts[genotype] = count_change
+
+    @staticmethod
+    def _label_n_genotypes(n: int) -> list[str]:
+        """Returns a list ['A', 'B', ...,] to the n;ths letter."""
+        if n > 26:
+            raise ValueError("No support for n>26.")
+        if n < 1:
+            raise ValueError("At least one genotype is required.")
+        return list(string.ascii_uppercase[:n])
