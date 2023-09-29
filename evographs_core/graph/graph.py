@@ -121,6 +121,8 @@ class Graph:
             for j in range(i + 1, n_nodes + 1):
                 if random.uniform(0, 1) <= edge_probability:
                     graph.add_edge(i, j)
+
+        graph._genotype_valuecounts()
         return graph
 
     def copy(self):
