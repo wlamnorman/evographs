@@ -1,3 +1,8 @@
+import random
+import string
+from typing import Self
+
+
 class NodeNotInGraphError(Exception):
     """Raised when nodes are not in the graph."""
 
@@ -40,6 +45,10 @@ class Node:
     def copy(self):
         """Create a shallow copy of the node."""
         return Node(self.genotype, self.node_id)
+
+    @classmethod
+    def random_node(cls, n_genotypes: int):
+        return cls(random.choice(Graph._label_n_genotypes(n_genotypes)))
 
 
 class Graph:
@@ -102,6 +111,30 @@ class Graph:
             self.nodes[node2].append(node1)
         else:
             raise NodeNotInGraphError(node_id1, node_id2)
+
+    @staticmethod
+    def _label_n_genotypes(n: int) -> list[str]:
+        """Returns a list ['A', 'B', ...,] to the n;ths letter."""
+        if n > 26:
+            raise ValueError("No support for n>26.")
+        if n < 1:
+            raise ValueError("At least one genotype is required.")
+        return list(string.ascii_uppercase[: n + 1])
+
+    @classmethod
+    def generate_random_graph(
+        cls, n_nodes: int, n_genotypes: int, edge_probability: float
+    ) -> Self:
+        graph = cls([], [])
+        for _ in range(n_nodes):
+            node = Node(random.choice(Graph._label_n_genotypes(n_genotypes)))
+            graph.add_node(node)
+
+        for i in range(1, n_nodes + 1):
+            for j in range(i + 1, n_nodes + 1):
+                if random.uniform(0, 1) <= edge_probability:
+                    graph.add_edge(i, j)
+        return graph
 
     def copy(self):
         """Create a deep copy of the graph."""

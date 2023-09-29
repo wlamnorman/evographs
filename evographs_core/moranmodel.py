@@ -1,5 +1,5 @@
 import random
-from graph import Graph
+from graph.graph import Graph
 from tqdm import tqdm
 
 

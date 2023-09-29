@@ -1,4 +1,4 @@
-from graph import Graph
+from graph.graph import Graph
 import random
 
 
