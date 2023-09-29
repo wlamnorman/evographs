@@ -40,8 +40,8 @@ def reproduce_population(graph: Graph):
     if neighbor_candidates:
         replaced_neighbor_node_id = random.choice(neighbor_candidates).node_id
         replaced_neighbor = next_generation.node_id_to_node[replaced_neighbor_node_id]
-        next_generation.update_genotype_valuecounts(replaced_neighbor.genotype, -1)
-        next_generation.update_genotype_valuecounts(selected_node.genotype, 1)
+        next_generation._update_genotype_valuecounts(replaced_neighbor.genotype, -1)
+        next_generation._update_genotype_valuecounts(selected_node.genotype, 1)
         replaced_neighbor.genotype = selected_node.genotype
 
     return next_generation

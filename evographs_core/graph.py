@@ -30,7 +30,7 @@ class Node:
         self.node_id = node_id
 
     @classmethod
-    def reset_next_id(cls):
+    def _reset_next_id(cls):
         cls._next_id = 1
 
     def display(self, indent=2):
@@ -82,7 +82,7 @@ class Graph:
 
         # reset the _next_id for each new graph instance
         # TODO: Remove this if we want to look at evolution of one ID
-        Node.reset_next_id()
+        Node._reset_next_id()
 
     def add_node(self, node: Node):
         """Adds a node if not present and checks for unique node IDs."""
@@ -119,7 +119,7 @@ class Graph:
         }
         return copied_graph
 
-    def display_edge(self, node_id1: int, node_id2: int, indent=2):
+    def _display_edge(self, node_id1: int, node_id2: int, indent=2):
         """Display information about a specific edge by the IDs of the connected nodes with indentation."""
         if node_id1 not in self.node_ids or node_id2 not in self.node_ids:
             raise NodeNotInGraphError(node_id1, node_id2)
@@ -129,12 +129,10 @@ class Graph:
 
     def display(self, indent=2):
         """Display information about the entire graph, including nodes and edges with indentation."""
-        indentation = " " * indent
-
         print("Nodes:")
         for node in self.node_ids:
             node = self.node_id_to_node[node]
-            _display_node(node, indent=indent)
+            _display_node(node, indent)
 
         print("Edges:")
         for node, adj_nodes in self.nodes.items():
@@ -144,7 +142,7 @@ class Graph:
                 # ensure each edge is displayed only once in ascending order
                 # with respect to node_id (assuming an undirected graph)
                 if node_id < adj_node_id:
-                    print(f"{indentation}({node_id}, {adj_node_id})")
+                    self._display_edge(node_id, adj_node_id, indent)
 
     def _genotype_valuecounts(self):
         genotype_valuecounts = {}
@@ -157,7 +155,7 @@ class Graph:
 
         self.genotype_valuecounts = genotype_valuecounts
 
-    def update_genotype_valuecounts(self, genotype: str, count_change: int):
+    def _update_genotype_valuecounts(self, genotype: str, count_change: int):
         """
         Update the genotype value count for a given genotype.
 
