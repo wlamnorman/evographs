@@ -86,7 +86,6 @@ class Graph:
             self.add_edge(node_id1, node_id2)
 
         # reset the _next_id for each new graph instance
-        # TODO: Remove this if we want to look at evolution of one ID
         Node._reset_next_id()
 
     def add_node(self, node: Node):
@@ -112,6 +111,25 @@ class Graph:
     def generate_random_graph(
         cls, n_nodes: int, n_genotypes: int, edge_probability: float
     ) -> Self:
+        """Generate a random graph based on the specified parameters.
+
+        This class method creates a random undirected graph with a given number of nodes, possible genotypes,
+        and edge probability. Nodes are assigned random (uniformly) genotypes from a set of possible genotypes,
+        and edges are added between nodes based on the specified edge probability.
+
+        Parameters:
+            cls: The class object.
+            n_nodes: The number of nodes to create in the graph.
+            n_genotypes: The number of possible genotypes to choose from when assigning genotypes to nodes.
+            edge_probability: The probability of an edge existing between two nodes, ranging from 0 to 1.
+
+        Returns:
+            Graph: A randomly generated Graph object with the specified parameters.
+
+        Example:
+            # Generate a random graph with 10 nodes, 5 possible genotypes, and an edge probability of 0.3
+            random_graph = Graph.generate_random_graph(10, 5, 0.3)
+        """
         graph = cls([], [])
         for _ in range(n_nodes):
             node = Node(random.choice(Graph._label_n_genotypes(n_genotypes)))
@@ -167,6 +185,7 @@ class Graph:
                     self._display_edge(node_id, adj_node_id, indent)
 
     def _genotype_valuecounts(self):
+        """Used to initialise the count of each genotype for a Graph."""
         genotype_valuecounts = {}
         for node in self.nodes:
             genotype = node.genotype
@@ -178,8 +197,7 @@ class Graph:
         self.genotype_valuecounts = genotype_valuecounts
 
     def _update_genotype_valuecounts(self, genotype: str, count_change: int):
-        """
-        Update the genotype value count for a given genotype.
+        """Update the genotype value count for a given genotype as the population evolves.
 
         Parameters:
             genotype: The genotype to update the value count for.
