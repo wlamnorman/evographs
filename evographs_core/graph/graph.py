@@ -46,10 +46,6 @@ class Node:
         """Create a shallow copy of the node."""
         return Node(self.genotype, self.node_id)
 
-    @classmethod
-    def random_node(cls, n_genotypes: int):
-        return cls(random.choice(Graph._label_n_genotypes(n_genotypes)))
-
 
 class Graph:
     """
