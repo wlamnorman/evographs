@@ -1,0 +1,19 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "evographs"
+version = "0.1.0"
+description = "Evolution of graphs package."
+authors = ["William Norman <vvilliamnorman@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+matplotlib = "^3.7.1"
+networkx = "^3.1"
+tqdm = "^4.65.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0"

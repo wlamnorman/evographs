@@ -21,7 +21,7 @@ def _display_node(self, indent=2):
 class Node:
     """Represents a node with a genotype and a unique integer ID."""
 
-    _next_id: int = 1  # class-level variable to track the next available ID
+    _next_id: int = 1
 
     def __init__(self, genotype: str, node_id: int | None = None):
         if node_id is None:
@@ -60,6 +60,8 @@ class Graph:
                       of adjacent nodes.
     """
 
+    _generation_id: int = 1
+
     def __init__(self, nodes: list[Node], edges: list[tuple[int, int]]):
         """
         Initializes a new Graph object and constructs the adjacency list.
@@ -74,6 +76,7 @@ class Graph:
             edges = [(1, 2), (2, 3)]
             g = Graph(nodes, edges)
         """
+        self.generation_id = Graph._generation_id
         self.nodes = {node: [] for node in nodes}  # adjacency list
         self.node_ids = set()  # set to track used node IDs
         self.node_id_to_node = {}  # dictionary to map node IDs to Node objects
@@ -88,6 +91,10 @@ class Graph:
         # reset the _next_id for each new graph instance
         Node._reset_next_id()
 
+    @classmethod
+    def reset_generation_id(cls):
+        cls._generation_id = 1
+
     def add_node(self, node: Node):
         """Adds a node if not present and checks for unique node IDs."""
         if node.node_id in self.node_ids:
@@ -99,13 +106,20 @@ class Graph:
 
     def add_edge(self, node_id1: int, node_id2: int):
         """Adds an undirected edge between nodes by their IDs; raises NodeNotInGraphError if either node is absent."""
-        if node_id1 in self.node_ids and node_id2 in self.node_ids:
-            node1 = self.node_id_to_node[node_id1]
-            node2 = self.node_id_to_node[node_id2]
-            self.nodes[node1].append(node2)
-            self.nodes[node2].append(node1)
-        else:
+        if node_id1 == node_id2:
+            raise ValueError("Self-loops are not allowed.")
+
+        if not (node_id1 in self.node_ids and node_id2 in self.node_ids):
             raise NodeNotInGraphError(node_id1, node_id2)
+
+        node1 = self.node_id_to_node[node_id1]
+        node2 = self.node_id_to_node[node_id2]
+
+        if node_id1 in self.nodes[node2]:
+            raise ValueError(f"Edge between {node_id1} and {node_id2} already exists.")
+
+        self.nodes[node1].append(node2)
+        self.nodes[node2].append(node1)
 
     @classmethod
     def generate_random_graph(
@@ -146,6 +160,8 @@ class Graph:
     def copy(self):
         """Create a deep copy of the graph."""
         copied_graph = Graph([], [])
+        Graph._generation_id += 1
+        copied_graph.generation_id = Graph._generation_id
         copied_graph.nodes = {
             node.copy(): [neighbor.copy() for neighbor in adj_list]
             for node, adj_list in self.nodes.items()
@@ -203,6 +219,9 @@ class Graph:
             genotype: The genotype to update the value count for.
             count_change: The change in count.
         """
+        if self.genotype_valuecounts[genotype] + count_change <= 0:
+            raise ValueError("Genotype count must be greater than zero.")
+
         if genotype in self.genotype_valuecounts.keys():
             self.genotype_valuecounts[genotype] += count_change
         else:  # for tracking newly introduced genotypes

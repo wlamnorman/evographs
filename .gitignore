@@ -1,11 +1,18 @@
-# Mac directory config
+# macOS system files
 .DS_Store
 
-# Compiled python modules
+# Byte-compiled Python files
 *.pyc
 
-# Notebook checkpoints
+# Jupyter Notebook files
 *.ipynb_checkpoints
 *.ipynb
 
+# Python cache files
 __pycache__
+
+# pyenv version file
+.python-version
+
+# Distribution packages
+dist/
