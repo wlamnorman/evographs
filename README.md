@@ -4,7 +4,7 @@ Starting of as a repository to explore algorithms on graphs with the intention o
 ![Evolutionary Graph](https://user-images.githubusercontent.com/71151811/271765284-d7300f23-0707-46d5-8fe8-f2f0fe612066.png)
 
 ## To be implemented
-* Visualisation of graph over generations
+* Visualisation of graph over generations (add generation number value counts visualisation)
 * `MoranModel` class
 * Proper fitness function based on given payoff matrix and proportion of strategies.
 * Visualisation
