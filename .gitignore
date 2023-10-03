@@ -1,3 +1,10 @@
+# venv
+bin/
+include/
+lib/
+pyvenv.cfg
+share
+
 # macOS system files
 .DS_Store
 

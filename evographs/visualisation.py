@@ -1,4 +1,4 @@
-from .graph import Graph
+from graph import Graph
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -26,7 +26,7 @@ def plot_graph(
     Genotype and ID labels are added to the nodes with customizable font sizes.
     The resulting plot is displayed using Matplotlib.
     """
-    graph.display()
+    print(graph.genotype_valuecounts)
     nx_graph = convert_to_networkx(graph)
 
     print(graph.genotype_valuecounts)

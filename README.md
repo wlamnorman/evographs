@@ -12,3 +12,4 @@ Starting of as a repository to explore algorithms on graphs with the intention o
     - proportion of strategies over generations.
 
 ## :beetle: known-bugs :bug:
+* When plotting population history from moran model simulations the networkx genotypes do not update properly
