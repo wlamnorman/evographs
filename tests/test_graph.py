@@ -95,3 +95,7 @@ class TestGraphMethods(unittest.TestCase):
         g = Graph([node_A, node_B], [])
         g._update_genotype_valuecounts("A", 1)
         self.assertEqual(g.genotype_valuecounts["A"], 2)
+
+
+if __name__ == "__main__":
+    unittest.main()

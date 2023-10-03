@@ -219,8 +219,8 @@ class Graph:
             genotype: The genotype to update the value count for.
             count_change: The change in count.
         """
-        if self.genotype_valuecounts[genotype] + count_change <= 0:
-            raise ValueError("Genotype count must be greater than zero.")
+        if self.genotype_valuecounts[genotype] + count_change < 0:
+            raise ValueError("Genotype count must be non-negative.")
 
         if genotype in self.genotype_valuecounts.keys():
             self.genotype_valuecounts[genotype] += count_change

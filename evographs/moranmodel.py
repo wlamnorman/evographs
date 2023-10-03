@@ -17,7 +17,8 @@ def moran_model_simulation(graph: Graph, generations: int):
     """
     population_history = [graph.copy()]
     for _ in tqdm(range(generations)):
-        next_generation = reproduce_population(graph.copy())
+        current_generation = population_history[-1].copy()
+        next_generation = reproduce_population(current_generation)
         population_history.append(next_generation)
     return population_history
 
@@ -43,7 +44,6 @@ def reproduce_population(graph: Graph):
         next_generation._update_genotype_valuecounts(replaced_neighbor.genotype, -1)
         next_generation._update_genotype_valuecounts(selected_node.genotype, 1)
         replaced_neighbor.genotype = selected_node.genotype
-
     return next_generation
 
 
