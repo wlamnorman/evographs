@@ -3,6 +3,12 @@ Starting of as a repository to explore algorithms on graphs with the intention o
 
 ![Evolutionary Graph](https://user-images.githubusercontent.com/71151811/271765284-d7300f23-0707-46d5-8fe8-f2f0fe612066.png)
 
+## TODO
+* Fix automatical venv-activation upon opening repository
+* Make sure imports are correct and that root of dir is exported
+* Solve bug where networkx genotype does not update (how does test not fail??)
+
+
 ## To be implemented
 * Visualisation of graph over generations (add generation number value counts visualisation)
 * `MoranModel` class
