@@ -1,4 +1,4 @@
-from graph import Graph
+from evographs.graph import Graph
 import random
 
 

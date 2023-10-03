@@ -1,4 +1,4 @@
-from graph import Graph
+from evographs.graph import Graph
 import networkx as nx
 import matplotlib.pyplot as plt
 

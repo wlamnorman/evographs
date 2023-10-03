@@ -4,6 +4,7 @@ include/
 lib/
 pyvenv.cfg
 share
+.env 
 
 # macOS system files
 .DS_Store
