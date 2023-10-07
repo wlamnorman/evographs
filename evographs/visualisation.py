@@ -1,4 +1,4 @@
-from evographs.graph import Graph
+from .graph import Graph
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -26,13 +26,10 @@ def plot_graph(
     Genotype and ID labels are added to the nodes with customizable font sizes.
     The resulting plot is displayed using Matplotlib.
     """
-    print(graph.genotype_valuecounts)
     nx_graph = convert_to_networkx(graph)
 
-    print(graph.genotype_valuecounts)
     genotype_colors = generate_genotype_colors(graph.genotype_valuecounts.keys())
     genotypes = [nx_graph.nodes[node]["genotype"] for node in nx_graph.nodes]
-    print(genotypes)
     node_colors = [genotype_colors[genotype] for genotype in genotypes]
 
     pos = nx.circular_layout(nx_graph)  # type: ignore
@@ -78,9 +75,7 @@ def convert_to_networkx(graph: Graph) -> nx.Graph:
     """
     nx_graph = nx.Graph()
     for node in graph.nodes:
-        node_id = node.node_id
-        genotype = node.genotype
-        nx_graph.add_node(node_id, genotype=genotype)
+        nx_graph.add_node(node.node_id, genotype=node.genotype)
 
     for node, neighbors in graph.nodes.items():
         for neighbor in neighbors:

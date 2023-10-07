@@ -26,20 +26,18 @@ class TestConvertToNetworkX(unittest.TestCase):
 
     def test_networkx_conversion_after_moran(self):
         graph = Graph.generate_random_graph(
-            n_nodes=4, n_genotypes=2, edge_probability=1
+            n_nodes=10, n_genotypes=2, edge_probability=1
         )
-        population_history = moran_model_simulation(graph, generations=5)
+        population_history = moran_model_simulation(graph, generations=10)
 
         for g in population_history:
             nx_graph = convert_to_networkx(g)
 
             # control node_id and genotype
             for node in g.nodes:
-                node_id = node.node_id
-                genotype = node.genotype
                 self.assertTrue(
-                    nx_graph.has_node(node_id)
-                    and nx_graph.nodes[node_id]["genotype"] == genotype
+                    nx_graph.has_node(node.node_id)
+                    and nx_graph.nodes[node.node_id]["genotype"] == node.genotype
                 )
 
             # control neighbors in adjacency list
@@ -52,7 +50,6 @@ class TestConvertToNetworkX(unittest.TestCase):
             converted_genotype_counts = Counter(
                 nx_graph.nodes[node_id]["genotype"] for node_id in nx_graph.nodes
             )
-
             self.assertEqual(original_genotype_counts, converted_genotype_counts)
 
 
