@@ -15,9 +15,9 @@ def moran_model_simulation(graph: Graph, generations: int):
     Returns:
         A list of Graph objects representing the state of the population at each generation.
     """
-    population_history = [graph.copy()]
+    population_history = [graph]
     for _ in tqdm(range(generations)):
-        current_generation = population_history[-1].copy()
+        current_generation = population_history[-1]
         next_generation = reproduce_population(current_generation)
         population_history.append(next_generation)
     return population_history

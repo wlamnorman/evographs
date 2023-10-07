@@ -27,7 +27,6 @@ def plot_graph(
     The resulting plot is displayed using Matplotlib.
     """
     nx_graph = convert_to_networkx(graph)
-
     genotype_colors = generate_genotype_colors(graph.genotype_valuecounts.keys())
     genotypes = [nx_graph.nodes[node]["genotype"] for node in nx_graph.nodes]
     node_colors = [genotype_colors[genotype] for genotype in genotypes]

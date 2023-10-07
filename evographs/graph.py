@@ -43,7 +43,7 @@ class Node:
         _display_node(self, indent)
 
     def copy(self):
-        """Create a shallow copy of the node."""
+        """Create a deep copy of the node."""
         return Node(self.genotype, self.node_id)
 
 
@@ -160,16 +160,21 @@ class Graph:
     def copy(self):
         """Create a deep copy of the graph."""
         copied_graph = Graph([], [])
+        # increment generation id
         Graph._generation_id += 1
         copied_graph.generation_id = Graph._generation_id
+
         copied_graph.nodes = {
             node.copy(): [neighbor.copy() for neighbor in adj_list]
             for node, adj_list in self.nodes.items()
         }
+
         copied_graph.node_ids = {node_id for node_id in self.node_ids}
+
         copied_graph.node_id_to_node = {
-            k: v.copy() for k, v in self.node_id_to_node.items()
+            node.node_id: node for node in copied_graph.nodes.keys()
         }
+
         copied_graph.genotype_valuecounts = {
             genotype: count for genotype, count in self.genotype_valuecounts.items()
         }
