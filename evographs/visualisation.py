@@ -1,10 +1,22 @@
-from .graph import Graph
+from evographs.graph import Graph
 import networkx as nx
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+
+def evolution_simulation_animator(population_history: list[Graph], fps: int = 5):
+    def update(frame):
+        ax.clear()
+        plot_graph(population_history[frame], ax=ax)
+
+    fig, ax = plt.subplots()
+    ani = FuncAnimation(fig, update, frames=len(population_history), repeat=True)  # type: ignore
+    ani.save("evolution_simulation.mp4", writer="ffmpeg", fps=fps)
 
 
 def plot_graph(
     graph: Graph,
+    ax,
     node_size: int = 750,
     genotype_label_font_size: int = 10,
     id_label_font_size: int = 6,
@@ -14,6 +26,7 @@ def plot_graph(
 
     Args:
         graph: The Graph object to be plotted.
+        ax: The Matplotlib Axes object to plot on.
         node_size: The size of the nodes in the graph plot. Defaults to 750.
         genotype_label_font_size: Font size for genotype labels. Defaults to 10.
         id_label_font_size: Font size for ID labels. Defaults to 6.
@@ -24,7 +37,7 @@ def plot_graph(
     This function uses NetworkX to create a graphical representation of an undirected graph.
     It visualizes the nodes with customizable node size and color based on genotypes.
     Genotype and ID labels are added to the nodes with customizable font sizes.
-    The resulting plot is displayed using Matplotlib.
+    The resulting plot is displayed on the provided Matplotlib Axes.
     """
     nx_graph = convert_to_networkx(graph)
     genotype_colors = generate_genotype_colors(graph.genotype_valuecounts.keys())
@@ -33,7 +46,12 @@ def plot_graph(
 
     pos = nx.circular_layout(nx_graph)  # type: ignore
     nx.draw(  # type: ignore
-        nx_graph, pos, with_labels=False, node_color=node_colors, node_size=node_size
+        nx_graph,
+        pos,
+        ax=ax,
+        with_labels=False,
+        node_color=node_colors,
+        node_size=node_size,
     )
 
     genotype_labels = {
@@ -44,6 +62,7 @@ def plot_graph(
     nx.draw_networkx_labels(  # type: ignore
         nx_graph,
         pos,
+        ax=ax,
         labels=genotype_labels,
         font_size=genotype_label_font_size,
         verticalalignment="bottom",
@@ -54,12 +73,11 @@ def plot_graph(
     nx.draw_networkx_labels(  # type: ignore
         nx_graph,
         pos,
+        ax=ax,
         labels=id_labels,
         font_size=id_label_font_size,
         verticalalignment="top",
     )
-    plt.show()
-    plt.clf()
 
 
 def convert_to_networkx(graph: Graph) -> nx.Graph:
