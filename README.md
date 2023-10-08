@@ -1,10 +1,12 @@
 # Evographs
 Starting of as a repository to explore algorithms on graphs with the intention of considering how populations evolve over time with a population structure determined by the graph.
 
-![Evolutionary Graph](https://user-images.githubusercontent.com/71151811/273471826-cf72678a-2e1e-43eb-a67a-370e0e63d0c4.mp4)
 
 # Running a simulation 
-Running `python3 -m evographs` in the terminal while in the root directory starts a simulation that is then saved as an animated video that visualises the evolution of the population.
+Running `python3 -m evographs` in the terminal while in the root directory starts a simulation that is then saved as an animated video that visualises the evolution of the population similarly to the video below.
+
+<video src="https://user-images.githubusercontent.com/71151811/273471826-cf72678a-2e1e-43eb-a67a-370e0e63d0c4.mp4"></video>
+
 
 ## :beetle: known-bugs :bug:
 
