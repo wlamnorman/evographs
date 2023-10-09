@@ -10,10 +10,10 @@ authors = ["William Norman <vvilliamnorman@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.11,<3.13"
 matplotlib = "^3.7.1"
 networkx = "^3.1"
-tqdm = "^4.65.0"
+scipy = "^1.11.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0"
