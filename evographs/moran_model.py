@@ -15,9 +15,20 @@ def moran_model_simulation(graph: Graph, n_generations: int):
     Returns:
         A list of Graph objects representing the state of the population at each generation.
     """
+
+    def genotype_fixated():
+        return (
+            len([n for n in current_generation.genotype_valuecounts.values() if n > 0])
+            == 1
+        )
+
     population_history = [graph]
     for _ in tqdm(range(n_generations)):
         current_generation = population_history[-1]
+
+        if genotype_fixated():
+            return population_history
+
         next_generation = reproduce_population(current_generation)
         population_history.append(next_generation)
     return population_history
