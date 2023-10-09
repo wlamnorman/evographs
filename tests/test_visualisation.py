@@ -1,7 +1,7 @@
 import unittest
 from evographs.graph import Graph, Node
 from evographs.visualisation import convert_to_networkx
-from evographs.moranmodel import moran_model_simulation
+from evographs.moran_model import moran_model_simulation
 from collections import Counter
 
 # turn off tqdm for test
@@ -28,7 +28,7 @@ class TestConvertToNetworkX(unittest.TestCase):
         graph = Graph.generate_random_graph(
             n_nodes=10, n_genotypes=2, edge_probability=1
         )
-        population_history = moran_model_simulation(graph, generations=10)
+        population_history = moran_model_simulation(graph, n_generations=10)
 
         for g in population_history:
             nx_graph = convert_to_networkx(g)

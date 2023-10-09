@@ -58,30 +58,42 @@ class TestGraphMethods(unittest.TestCase):
 
         g2 = g1.copy()
 
-        # Check IDs are different to ensure it's a deep copy
         self.assertNotEqual(id(g1), id(g2))
-
-        # Check attributes are equal, except for generation_id
         self.assertEqual(g1.node_ids, g2.node_ids)
-
-        # Check that generation_id is incremented by 1
         self.assertEqual(g1.generation_id + 1, g2.generation_id)
+        self.assertEqual(g1.genotype_valuecounts, g2.genotype_valuecounts)
 
-        # Check nodes are equal and deep copied
+        # check that nodes are properly copied
         for node1, node2 in zip(g1.nodes.keys(), g2.nodes.keys()):
             self.assertNotEqual(id(node1), id(node2))
             self.assertEqual(node1.genotype, node2.genotype)
             self.assertEqual(node1.node_id, node2.node_id)
 
-        # Check adjacency lists are equal and deep copied
+        # check that adjacency lists are properly copied
         for value1, value2 in zip(g1.nodes.values(), g2.nodes.values()):
             for adj_node1, adj_node2 in zip(value1, value2):
                 self.assertNotEqual(id(adj_node1), id(adj_node2))
                 self.assertEqual(adj_node1.genotype, adj_node2.genotype)
                 self.assertEqual(adj_node1.node_id, adj_node2.node_id)
 
-        # Check genotype value counts
-        self.assertEqual(g1.genotype_valuecounts, g2.genotype_valuecounts)
+        # check that node_id_to_node mappings are the equivalent
+        self.assertEqual(
+            set(g1.node_id_to_node.keys()),
+            set(g2.node_id_to_node.keys()),
+            "Node IDs do not match.",
+        )
+        for node_id, node1 in g1.node_id_to_node.items():
+            node2 = g2.node_id_to_node[node_id]
+            self.assertEqual(
+                node1.genotype,
+                node2.genotype,
+                f"Genotype mismatch for Node ID {node_id}",
+            )
+            self.assertEqual(
+                node1.node_id,
+                node2.node_id,
+                f"Node ID mismatch for Node ID {node_id}",
+            )
 
     def test_genotype_valuecounts_initialization(self):
         node_A = Node("A", 1)
