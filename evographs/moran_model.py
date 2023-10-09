@@ -1,6 +1,5 @@
 import random
 from evographs.graph import Graph
-from tqdm import tqdm
 
 
 def moran_model_simulation(graph: Graph, n_generations: int):
@@ -10,7 +9,6 @@ def moran_model_simulation(graph: Graph, n_generations: int):
     Parameters:
         graph: The initial population graph.
         generations: The number of generations to simulate.
-        mutation_rate: The mutation rate parameter.
 
     Returns:
         A list of Graph objects representing the state of the population at each generation.
@@ -23,7 +21,7 @@ def moran_model_simulation(graph: Graph, n_generations: int):
         )
 
     population_history = [graph]
-    for _ in tqdm(range(n_generations)):
+    for _ in range(n_generations):
         current_generation = population_history[-1]
 
         if genotype_fixated():

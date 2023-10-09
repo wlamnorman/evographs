@@ -1,8 +1,21 @@
-from evographs.simulation_wrapper import run_simulation
+from evographs.graph import Graph
+from evographs.moran_model import moran_model_simulation
 from evographs.visualisation import evolution_simulation_animator
 import argparse
 import logging
 import os
+
+
+def run_simulation(
+    n_nodes: int, n_genotypes: int, edge_probability: float, n_generations: int
+) -> list[Graph]:
+    graph = Graph.generate_random_graph(
+        n_nodes=n_nodes, n_genotypes=n_genotypes, edge_probability=edge_probability
+    )
+    population_history = moran_model_simulation(
+        graph=graph, n_generations=n_generations
+    )
+    return population_history
 
 
 def setup_logging():
@@ -24,9 +37,6 @@ def save_animation(history, output_file, fps):
 
 if __name__ == "__main__":
     setup_logging()
-
-    logging.info("Starting the simulation.")
-
     parser = argparse.ArgumentParser(
         description="Gets raw data for simulations.",
     )
@@ -41,7 +51,11 @@ if __name__ == "__main__":
         required=True,
     )
     parser.add_argument(
-        "-n_generations", type=int, help="Number of generations.", required=True
+        "-n_generations",
+        type=int,
+        help="Number of generations.",
+        required=False,
+        default=1_000_000,
     )
     parser.add_argument(
         "-output_file",
@@ -53,15 +67,18 @@ if __name__ == "__main__":
         "-fps",
         type=int,
         help="Frames per second for the animation.",
-        default=10,
+        default=20,
     )
 
     args = parser.parse_args()
 
     logging.info(
-        f"Running simulation with {args.n_nodes} nodes, {args.n_genotypes} genotypes, {args.edge_probability} edge probability, and {args.n_generations} generations."
+        f"Running simulation with {args.n_nodes} nodes, {args.n_genotypes} genotypes and {args.edge_probability} edge probability"
     )
     population_history = run_simulation(
         args.n_nodes, args.n_genotypes, args.edge_probability, args.n_generations
+    )
+    logging.info(
+        f"Simulation completed after {len(population_history)} due to genotype fixation."
     )
     save_animation(population_history, args.output_file, args.fps)

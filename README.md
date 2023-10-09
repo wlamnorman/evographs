@@ -11,6 +11,8 @@ Running `python3 -m evographs -h` in the terminal while in the root directory an
 ## :beetle: known-bugs :bug:
 
 ## TODO
+* Make sure the Graph is connected, if a Node has no connections then add a random edge(?)
+
 Finish `MoranModel` class (coming in v2 of `moran_model.py`) with proper fitness functions based of a payoff matrix
 * Proper fitness function based on given payoff matrix and proportion of strategies.
 * Visualise fitness over generations

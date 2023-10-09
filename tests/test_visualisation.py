@@ -4,12 +4,6 @@ from evographs.visualisation import convert_to_networkx
 from evographs.moran_model import moran_model_simulation
 from collections import Counter
 
-# turn off tqdm for test
-from tqdm import tqdm
-from functools import partialmethod
-
-tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)  # type: ignore
-
 
 class TestConvertToNetworkX(unittest.TestCase):
     def test_convert_to_networkx(self):
