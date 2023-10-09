@@ -4,14 +4,16 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 
-def evolution_simulation_animator(population_history: list[Graph], fps: int = 5):
+def evolution_simulation_animator(
+    population_history: list[Graph], save_path: str, fps: int = 5
+):
     def update(frame):
         ax.clear()
         plot_graph(population_history[frame], ax=ax)
 
     fig, ax = plt.subplots()
     ani = FuncAnimation(fig, update, frames=len(population_history), repeat=True)  # type: ignore
-    ani.save("evolution_simulation.mp4", writer="ffmpeg", fps=fps)
+    ani.save(save_path, writer="ffmpeg", fps=fps)
 
 
 def plot_graph(

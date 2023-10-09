@@ -11,7 +11,6 @@ Running `python3 -m evographs` in the terminal while in the root directory start
 ## :beetle: known-bugs :bug:
 
 ## TODO
-* argparse to `__main__.py` to control simulation parameters
 Finish `MoranModel` class (coming in v2 of `moran_model.py`) with proper fitness functions based of a payoff matrix
 * Proper fitness function based on given payoff matrix and proportion of strategies.
 * Visualisation extensions:

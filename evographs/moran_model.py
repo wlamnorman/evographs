@@ -3,7 +3,7 @@ from evographs.graph import Graph
 from tqdm import tqdm
 
 
-def moran_model_simulation(graph: Graph, generations: int):
+def moran_model_simulation(graph: Graph, n_generations: int):
     """
     Simulate the (spatial) Moran model on a graph for a specified number of generations.
 
@@ -16,7 +16,7 @@ def moran_model_simulation(graph: Graph, generations: int):
         A list of Graph objects representing the state of the population at each generation.
     """
     population_history = [graph]
-    for _ in tqdm(range(generations)):
+    for _ in tqdm(range(n_generations)):
         current_generation = population_history[-1]
         next_generation = reproduce_population(current_generation)
         population_history.append(next_generation)
