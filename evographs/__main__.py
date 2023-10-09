@@ -6,6 +6,13 @@ import logging
 import os
 
 
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s]: %(message)s",
+    )
+
+
 def run_simulation(
     n_nodes: int, n_genotypes: int, edge_probability: float, n_generations: int
 ) -> list[Graph]:
@@ -16,13 +23,6 @@ def run_simulation(
         graph=graph, n_generations=n_generations
     )
     return population_history
-
-
-def setup_logging():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s [%(levelname)s]: %(message)s",
-    )
 
 
 def save_animation(history, output_file, fps):
