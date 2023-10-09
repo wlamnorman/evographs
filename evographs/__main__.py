@@ -31,7 +31,10 @@ def save_animation(history, output_file, fps):
     full_path = os.path.join("animations", output_file)
     logging.info(f"Saving animation to {full_path}.")
     evolution_simulation_animator(
-        population_history=history, save_path=full_path, fps=fps
+        population_history=history,
+        save_path=full_path,
+        fps=fps,
+        layout_type=args.layout_type,
     )
 
 
@@ -68,6 +71,15 @@ if __name__ == "__main__":
         type=int,
         help="Frames per second for the animation.",
         default=20,
+    )
+    parser.add_argument(
+        "-layout_type",
+        type=str,
+        help="""Determines nodes positions in Graph plot. 
+        Use 'kamada_kawai' (default) for better visualisation of connctivity. 
+        Circular results in a graph with nodes along a circle.
+        """,
+        default="kamada_kawai",
     )
 
     args = parser.parse_args()

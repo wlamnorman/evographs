@@ -123,7 +123,12 @@ class Graph:
 
     @classmethod
     def generate_random_graph(
-        cls, n_nodes: int, n_genotypes: int, edge_probability: float
+        cls,
+        n_nodes: int,
+        n_genotypes: int,
+        edge_probability: float,
+        is_complete: bool = True,
+        max_attempts: int = 1000,
     ) -> Self:
         """Generate a random graph based on the specified parameters.
 
@@ -144,18 +149,27 @@ class Graph:
             # Generate a random graph with 10 nodes, 5 possible genotypes, and an edge probability of 0.3
             random_graph = Graph.generate_random_graph(10, 5, 0.3)
         """
-        graph = cls([], [])
-        for _ in range(n_nodes):
-            node = Node(random.choice(Graph._label_n_genotypes(n_genotypes)))
-            graph.add_node(node)
+        attempts = 0
+        while attempts < max_attempts:
+            graph = cls([], [])
+            for _ in range(n_nodes):
+                node = Node(random.choice(Graph._label_n_genotypes(n_genotypes)))
+                graph.add_node(node)
 
-        for i in range(1, n_nodes + 1):
-            for j in range(i + 1, n_nodes + 1):
-                if random.uniform(0, 1) <= edge_probability:
-                    graph.add_edge(i, j)
+            for i in range(1, n_nodes + 1):
+                for j in range(i + 1, n_nodes + 1):
+                    if random.uniform(0, 1) <= edge_probability:
+                        graph.add_edge(i, j)
 
-        graph._genotype_valuecounts()
-        return graph
+            graph._genotype_valuecounts()
+            if not is_complete or graph.is_connected():
+                return graph
+            attempts += 1
+        raise RuntimeError(
+            "Failed to generate a connected graph after {} attempts.".format(
+                max_attempts
+            )
+        )
 
     def copy(self):
         """Create a deep copy of the graph."""
@@ -240,3 +254,19 @@ class Graph:
         if n < 1:
             raise ValueError("At least one genotype is required.")
         return list(string.ascii_uppercase[:n])
+
+    def is_connected(self) -> bool:
+        """Depth First Search (DFS) algorithm to check if a Graph is connected."""
+        visited_nodes = set()
+        start_node_id = next(iter(self.nodes.keys())).node_id
+        stack = [start_node_id]
+        while stack:
+            current_node_id = stack.pop()
+            visited_nodes.add(current_node_id)
+
+            for adj_node in self.nodes[self.node_id_to_node[current_node_id]]:
+                adj_node_id = adj_node.node_id
+                if adj_node_id not in visited_nodes:
+                    stack.append(adj_node_id)
+
+        return len(visited_nodes) == len(self.nodes)

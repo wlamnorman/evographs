@@ -5,17 +5,12 @@ Starting of as a repository to explore algorithms on graphs with the intention o
 # Running a simulation 
 Running `python3 -m evographs -h` in the terminal while in the root directory and set parameters as per your liking to start a simulation that is then saved as an animated video that visualises the evolution of the population similarly to the video below.
 
-<video src="https://user-images.githubusercontent.com/71151811/273471826-cf72678a-2e1e-43eb-a67a-370e0e63d0c4.mp4"></video>
+<video src="https://user-images.githubusercontent.com/71151811/273640700-4d10b6e9-0b33-49d7-839f-d7971c8a9129.mp4"></video>
 
 
 ## :beetle: known-bugs :bug:
 
 ## TODO
-* Make sure the Graph is connected, if a Node has no connections then add a random edge(?)
-
-Finish `MoranModel` class (coming in v2 of `moran_model.py`) with proper fitness functions based of a payoff matrix
+* Finish `MoranModel` class (coming in v2 of `moran_model.py`) with proper fitness functions based of a payoff matrix
 * Proper fitness function based on given payoff matrix and proportion of strategies.
 * Visualise fitness over generations
-
-## Ideas for later development
-* Use plotly for graph plots to incorporate connectivity? https://plotly.com/python/network-graphs/

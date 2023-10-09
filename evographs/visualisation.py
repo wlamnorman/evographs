@@ -5,12 +5,17 @@ from matplotlib.animation import FuncAnimation
 
 
 def evolution_simulation_animator(
-    population_history: list[Graph], save_path: str, fps: int = 10
+    population_history: list[Graph],
+    save_path: str,
+    fps: int = 10,
+    layout_type: str = "kamada_kawai",
 ):
     def update_frame(frame):
         graph_ax.clear()
         bar_ax.clear()
-        plot_graph_with_barchart(population_history[frame], graph_ax, bar_ax)
+        plot_graph_with_barchart(
+            population_history[frame], graph_ax, bar_ax, layout_type=layout_type
+        )
         generation_text.set_text(f"Generation: {frame}")
 
     fig = plt.figure(figsize=(10, 12))
@@ -32,6 +37,7 @@ def plot_graph_with_barchart(
     node_size: int = 750,
     genotype_label_font_size: int = 10,
     id_label_font_size: int = 6,
+    layout_type: str = "kamada_kawai",
 ):
     """
     Plots an undirected graph using NetworkX with customizable node and label attributes.
@@ -52,7 +58,7 @@ def plot_graph_with_barchart(
     The resulting plot is displayed on the provided Matplotlib Axes.
     """
 
-    def plot_genotypes_barchart(ax, graph, genotype_colors):
+    def plot_genotypes_barchart(ax, graph: Graph, genotype_colors: dict):
         total_nodes = sum(graph.genotype_valuecounts.values())
         genotype_proportions = {
             k: v / total_nodes for k, v in graph.genotype_valuecounts.items()
@@ -67,16 +73,26 @@ def plot_graph_with_barchart(
         ax.set_title("Genotype Proportions")
         ax.set_ylim(0, 1)
 
+    def set_node_positions(layout_type: str, nx_graph: nx.Graph):
+        if layout_type == "kamada_kawai":
+            positions = nx.kamada_kawai_layout(nx_graph)  # type: ignore
+        elif layout_type == "circular":
+            positions = nx.circular_layout(nx_graph)  # type: ignore
+        else:
+            raise ValueError("Invalid layout_type. Use 'kamada_kawai' or 'circular'.")
+        return positions
+
     nx_graph = convert_to_networkx(graph)
 
     genotype_colors = generate_genotype_colors(graph.genotype_valuecounts.keys())
     genotypes = [nx_graph.nodes[node]["genotype"] for node in nx_graph.nodes]
     node_colors = [genotype_colors[genotype] for genotype in genotypes]
 
-    pos = nx.circular_layout(nx_graph)  # type: ignore
+    node_positions = set_node_positions(layout_type, nx_graph)
+
     nx.draw(  # type: ignore
         nx_graph,
-        pos,
+        node_positions,
         ax=graph_ax,
         with_labels=False,
         node_color=node_colors,
@@ -90,7 +106,7 @@ def plot_graph_with_barchart(
     # add genotype labels
     nx.draw_networkx_labels(  # type: ignore
         nx_graph,
-        pos,
+        node_positions,
         ax=graph_ax,
         labels=genotype_labels,
         font_size=genotype_label_font_size,
@@ -101,7 +117,7 @@ def plot_graph_with_barchart(
     id_labels = {node: f"{node}" for node in nx_graph.nodes}
     nx.draw_networkx_labels(  # type: ignore
         nx_graph,
-        pos,
+        node_positions,
         ax=graph_ax,
         labels=id_labels,
         font_size=id_label_font_size,
