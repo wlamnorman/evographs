@@ -27,4 +27,5 @@ __pycache__
 dist/
 
 # animations
+animations/
 .mp4
