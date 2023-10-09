@@ -53,7 +53,7 @@ if __name__ == "__main__":
         "-fps",
         type=int,
         help="Frames per second for the animation.",
-        default=5,
+        default=10,
     )
 
     args = parser.parse_args()

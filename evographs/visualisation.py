@@ -5,20 +5,30 @@ from matplotlib.animation import FuncAnimation
 
 
 def evolution_simulation_animator(
-    population_history: list[Graph], save_path: str, fps: int = 5
+    population_history: list[Graph], save_path: str, fps: int = 10
 ):
-    def update(frame):
-        ax.clear()
-        plot_graph(population_history[frame], ax=ax)
+    def update_frame(frame):
+        graph_ax.clear()
+        bar_ax.clear()
+        plot_graph_with_barchart(population_history[frame], graph_ax, bar_ax)
+        generation_text.set_text(f"Generation: {frame}")
 
-    fig, ax = plt.subplots()
-    ani = FuncAnimation(fig, update, frames=len(population_history), repeat=True)  # type: ignore
+    fig = plt.figure(figsize=(10, 12))
+    generation_text = fig.text(
+        0.02, 0.98, "", fontsize=16, ha="left", va="top", weight="bold"
+    )
+    graph_ax = plt.subplot2grid((6, 1), (0, 0), rowspan=5)
+    bar_ax = plt.subplot2grid((6, 1), (5, 0), rowspan=1)
+    fig.subplots_adjust(hspace=0.1)
+
+    ani = FuncAnimation(fig, update_frame, frames=len(population_history), repeat=True)  # type: ignore
     ani.save(save_path, writer="ffmpeg", fps=fps)
 
 
-def plot_graph(
+def plot_graph_with_barchart(
     graph: Graph,
-    ax,
+    graph_ax,
+    bar_ax,
     node_size: int = 750,
     genotype_label_font_size: int = 10,
     id_label_font_size: int = 6,
@@ -41,7 +51,24 @@ def plot_graph(
     Genotype and ID labels are added to the nodes with customizable font sizes.
     The resulting plot is displayed on the provided Matplotlib Axes.
     """
+
+    def plot_genotypes_barchart(ax, graph, genotype_colors):
+        total_nodes = sum(graph.genotype_valuecounts.values())
+        genotype_proportions = {
+            k: v / total_nodes for k, v in graph.genotype_valuecounts.items()
+        }
+
+        genotypes = list(genotype_proportions.keys())
+        proportions = list(genotype_proportions.values())
+        bar_colors = [genotype_colors[g] for g in genotypes]
+
+        ax.bar(genotypes, proportions, color=bar_colors)
+        ax.set_ylabel("Proportion")
+        ax.set_title("Genotype Proportions")
+        ax.set_ylim(0, 1)
+
     nx_graph = convert_to_networkx(graph)
+
     genotype_colors = generate_genotype_colors(graph.genotype_valuecounts.keys())
     genotypes = [nx_graph.nodes[node]["genotype"] for node in nx_graph.nodes]
     node_colors = [genotype_colors[genotype] for genotype in genotypes]
@@ -50,7 +77,7 @@ def plot_graph(
     nx.draw(  # type: ignore
         nx_graph,
         pos,
-        ax=ax,
+        ax=graph_ax,
         with_labels=False,
         node_color=node_colors,
         node_size=node_size,
@@ -60,26 +87,27 @@ def plot_graph(
         node: f"{nx_graph.nodes[node]['genotype']}" for node in nx_graph.nodes
     }
 
-    # Add genotype labels
+    # add genotype labels
     nx.draw_networkx_labels(  # type: ignore
         nx_graph,
         pos,
-        ax=ax,
+        ax=graph_ax,
         labels=genotype_labels,
         font_size=genotype_label_font_size,
         verticalalignment="bottom",
     )
 
-    # Add ID labels with smaller font size below genotype labels
+    # add ID labels with smaller font size below genotype labels
     id_labels = {node: f"{node}" for node in nx_graph.nodes}
     nx.draw_networkx_labels(  # type: ignore
         nx_graph,
         pos,
-        ax=ax,
+        ax=graph_ax,
         labels=id_labels,
         font_size=id_label_font_size,
         verticalalignment="top",
     )
+    plot_genotypes_barchart(bar_ax, graph, genotype_colors)
 
 
 def convert_to_networkx(graph: Graph) -> nx.Graph:
