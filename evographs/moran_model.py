@@ -2,7 +2,7 @@ import random
 from evographs.graph import Graph
 
 
-def moran_model_simulation(graph: Graph, n_generations: int):
+def moran_model_simulation(graph: Graph, n_generations: int = 1_000_000):
     """
     Simulate the (spatial) Moran model on a graph for a specified number of generations.
 
@@ -14,17 +14,10 @@ def moran_model_simulation(graph: Graph, n_generations: int):
         A list of Graph objects representing the state of the population at each generation.
     """
 
-    def genotype_fixated():
-        return (
-            len([n for n in current_generation.genotype_valuecounts.values() if n > 0])
-            == 1
-        )
-
     population_history = [graph]
     for _ in range(n_generations):
         current_generation = population_history[-1]
-
-        if genotype_fixated():
+        if current_generation._genotype_has_fixated():
             return population_history
 
         next_generation = reproduce_population(current_generation)
@@ -46,7 +39,7 @@ def reproduce_population(graph: Graph):
     selected_node = select_individual(graph)
 
     # choose neighbor uniformly who should inherit the selected node's genotype
-    neighbor_candidates = list(graph.nodes[selected_node])
+    neighbor_candidates = graph.nodes[selected_node]
     if neighbor_candidates:
         replaced_neighbor_node_id = random.choice(neighbor_candidates).node_id
         replaced_neighbor = next_generation.node_id_to_node[replaced_neighbor_node_id]
