@@ -99,13 +99,13 @@ class Graph:
         """Adds a node if not present and checks for unique node IDs."""
         if node.node_id in self.node_ids:
             raise ValueError(f"Node ID {node.node_id} already exists in graph.")
+
         self.node_ids.add(node.node_id)
-        if node not in self.nodes:
-            self.nodes[node] = []
+        self.nodes[node] = []  # empty adjacency list
         self.node_id_to_node[node.node_id] = node
 
     def add_edge(self, node_id1: int, node_id2: int):
-        """Adds an undirected edge between nodes by their IDs; raises NodeNotInGraphError if either node is absent."""
+        """Adds an undirected edge between nodes identified by their IDs."""
         if node_id1 == node_id2:
             raise ValueError("Self-loops are not allowed.")
 
