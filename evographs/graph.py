@@ -270,3 +270,6 @@ class Graph:
                     stack.append(adj_node_id)
 
         return len(visited_nodes) == len(self.nodes)
+
+    def _genotype_has_fixated(self) -> bool:
+        return len([n for n in self.genotype_valuecounts.values() if n > 0]) == 1
