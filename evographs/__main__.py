@@ -1,5 +1,5 @@
 from evographs.graph import Graph
-from evographs.moran_model import moran_model_simulation
+from evographs.moran_model import MoranModel
 from evographs.visualisation import evolution_simulation_animator
 import argparse
 import logging
@@ -19,10 +19,9 @@ def run_simulation(
     graph = Graph.generate_random_graph(
         n_nodes=n_nodes, n_genotypes=n_genotypes, edge_probability=edge_probability
     )
-    population_history = moran_model_simulation(
-        graph=graph, n_generations=n_generations
-    )
-    return population_history
+    process = MoranModel(graph, payoff_matrix={}, selection_intensity=0.2)
+    process.run_simulation()
+    return process.population_history
 
 
 def save_animation(history, output_file, fps):
