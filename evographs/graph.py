@@ -219,6 +219,9 @@ class Graph:
                 if node_id < adj_node_id:
                     self._display_edge(node_id, adj_node_id, indent)
 
+    def get_adjacent_nodes(self, node: Node) -> list[Node]:
+        return self.nodes[node]
+
     def _genotype_valuecounts(self):
         """Used to initialise the count of each genotype for a Graph."""
         genotype_valuecounts = {}

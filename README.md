@@ -11,6 +11,5 @@ Running `python3 -m evographs -h` in the terminal while in the root directory an
 ## :beetle: known-bugs :bug:
 
 ## TODO
-* Finish `MoranModel` class (coming in v2 of `moran_model.py`) with proper fitness functions based of a payoff matrix
-* Proper fitness function based on given payoff matrix and proportion of strategies.
+* Update `MoranModel` class with proper fitness functions based on payoff matrix and selection intensity: use defined functions for fitness calculations to update the `_select_individual` method in `MoranModel`.
 * Visualise fitness over generations
