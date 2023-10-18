@@ -1,5 +1,5 @@
 # Evographs
-This repository implements a installable package called `evographs` which implements the spatial Moran model on a Graph class, allows for carrying out simulations and animations of the evolution of a Graph object whose nodes reproduce according to the Moran model.
+This repository implements a installable package (run `poetry install` in root directory) called `evographs` which implements the spatial Moran model on a Graph class, allows for carrying out simulations and animations of the evolution of a Graph object whose nodes reproduce according to the Moran model.
 
 # Running a simulation 
 Running `python3 -m evographs -h` in the terminal while in the root directory and set parameters as per your liking to start a simulation that is then saved as an animated video that visualises the evolution of the population similarly to the video below.
