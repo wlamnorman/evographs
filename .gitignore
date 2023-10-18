@@ -29,3 +29,6 @@ dist/
 # animations
 animations/
 .mp4
+
+# poetry
+poetry.lock
