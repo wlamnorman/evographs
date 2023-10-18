@@ -1,5 +1,5 @@
 from evographs.graph import Graph
-from evographs.moran_model import MoranModel
+from evographs.moran_model import MoranModel, PayoffMatrixType
 from evographs.visualisation import evolution_simulation_animator
 import argparse
 import logging
@@ -14,12 +14,16 @@ def setup_logging():
 
 
 def run_simulation(
-    n_nodes: int, n_genotypes: int, edge_probability: float, n_generations: int
+    n_nodes: int,
+    n_genotypes: int,
+    edge_probability: float,
+    selection_intensity: float,
 ) -> list[Graph]:
     graph = Graph.generate_random_graph(
         n_nodes=n_nodes, n_genotypes=n_genotypes, edge_probability=edge_probability
     )
-    process = MoranModel(graph, payoff_matrix={}, selection_intensity=0.2)
+    payoff_matrix = MoranModel._generate_random_payoff_matrix(graph)
+    process = MoranModel(graph, payoff_matrix, selection_intensity)
     process.run_simulation()
     return process.population_history
 
@@ -53,11 +57,11 @@ if __name__ == "__main__":
         required=True,
     )
     parser.add_argument(
-        "-n_generations",
-        type=int,
-        help="Number of generations.",
+        "-selection_intensity",
+        type=float,
+        help="Governs the impact of fitness on reproduction.",
         required=False,
-        default=1_000_000,
+        default=1 / 2,
     )
     parser.add_argument(
         "-output_file",
@@ -87,7 +91,10 @@ if __name__ == "__main__":
         f"Running simulation with {args.n_nodes} nodes, {args.n_genotypes} genotypes and {args.edge_probability} edge probability"
     )
     population_history = run_simulation(
-        args.n_nodes, args.n_genotypes, args.edge_probability, args.n_generations
+        args.n_nodes,
+        args.n_genotypes,
+        args.edge_probability,
+        args.selection_intensity,
     )
     logging.info(
         f"Simulation completed after {len(population_history)} due to genotype fixation."
