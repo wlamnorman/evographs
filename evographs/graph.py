@@ -49,15 +49,16 @@ class Node:
 
 class Graph:
     """
-    Represents an undirected graph.
-
-    An adjacency list is used for the representation. In this structure, every node is a key in a dictionary,
-    and its value is a list of nodes to which it has an edge. This list is a more efficient way to store
-    sparse graphs compared to an adjacency matrix.
+    Represents an undirected graph using an adjacency list representation.
 
     Attributes:
-        nodes: A dictionary serving as an adjacency list where keys are nodes and values are lists
-                      of adjacent nodes.
+        generation_id: An identifier for the generation of the graph. Starts at 1 and increments with each new instance.
+        nodes: Adjacency list where keys are Node objects and values are lists of adjacent Node objects.
+        node_ids: Set containing the IDs of all nodes in the graph.
+        node_id_to_node: Maps node IDs to their respective Node objects.
+
+    Class Attributes:
+        _generation_id: Class-level variable to keep track of the generation_id for new instances.
     """
 
     _generation_id: int = 1
