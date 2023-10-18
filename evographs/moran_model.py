@@ -11,15 +11,27 @@ class MoranModel:
 
     Attributes:
         generation: The current generation number.
-        graph: The initial population graph representing individuals in a structured population with different strategies.
+        graph: The initial population graph representing individuals in a structured population with
+        different strategies.
         payoff_matrix: A dictionary representing the payoff matrix for interactions between strategies.
-        selection_intensity: The selection intensity parameter that influences the extent to which fitness leads the reproduction process.
-        population_history: A list of Graph objects representing the state of the population at each generation.
+        selection_intensity: The selection intensity parameter that influences the extent to which
+        fitness leads the reproduction process.
+        population_history: A list of Graph objects representing the state of the population at each
+        generation.
     """
 
-    def __init__(self, graph: Graph, payoff_matrix: dict, selection_intensity: float):
+    def __init__(
+        self,
+        graph: Graph,
+        payoff_matrix: PayoffMatrixType | None = None,
+        selection_intensity: float = 0.5,
+    ):
         self.graph = graph
-        self.payoff_matrix = payoff_matrix
+        self.payoff_matrix = (
+            payoff_matrix
+            if payoff_matrix
+            else self._generate_random_payoff_matrix(graph)
+        )
         self.selection_intensity = selection_intensity
         self.population_history = []
 
@@ -34,13 +46,13 @@ class MoranModel:
             if current_population._genotype_has_fixated():
                 return self
 
-            self.next_generation()
+            self._next_generation()
 
         return self
 
-    def next_generation(self):
+    def _next_generation(self):
         """Advance process to next generation."""
-        selected_node = self._select_individual()
+        selected_node = self._select_node()
         neighbor_candidates = self.graph.nodes[selected_node]
         next_generation = self.graph.copy()
         if neighbor_candidates:
@@ -54,76 +66,63 @@ class MoranModel:
 
             self.graph = next_generation
 
-    def _select_individual(self):
-        """Select an individual probabilistically (probabilities proportional to fitness) for reproduction."""
-
-        # # TODO: update with the below functions
-        # def calculate_fitness_per_genotype(
-        #     graph: Graph, payoff_matrix: PayoffMatrixType, selection_intensity: float
-        # ) -> dict[str, float]:
-        #     """
-        #     Calculate the fitness for each genotype in a spatial Moran model.
-
-        #     Parameters:
-        #     - graph: The graph object representing the population structure.
-        #     - payoff_matrix: A dictionary representing the payoff for interactions
-        #     between genotypes.
-        #     - selection_intensity: A factor that adjusts how strong the selection pressure is.
-
-        #     Returns:
-        #     - A dictionary mapping genotypes to their calculated fitness.
-        #     """
-
-        #     genotype_fitnesses = {}
-        #     for node in graph.nodes:
-        #         genotype_fitnesses[node.genotype] = genotype_fitnesses.get(
-        #             node.genotype, 0
-        #         )
-        #         adj_genotype_valuecounts = dict(
-        #             Counter([node.genotype for node in graph.get_adjacent_nodes(node)])
-        #         )
-
-        #         for neighbor_genotype in adj_genotype_valuecounts.keys():
-        #             genotype_fitnesses[node.genotype] += (
-        #                 payoff_matrix[node.genotype][neighbor_genotype]
-        #                 * adj_genotype_valuecounts[neighbor_genotype]
-        #             )
-
-        #     return {
-        #         genotype: 1 - selection_intensity + selection_intensity * fitness
-        #         for genotype, fitness in genotype_fitnesses.items()
-        #     }
-
-        # def normalise_genotype_fitness(
-        #     genotype_fitnesses: dict[str, float]
-        # ) -> dict[str, float]:
-        #     total_fitness = sum(genotype_fitnesses.values())
-        #     return {k: v / total_fitness for k, v in genotype_fitnesses.items()}
-
-        # def generate_random_payoff_matrix(graph: Graph) -> PayoffMatrixType:
-        #     """Generate a random payoff matrix based strategies in Graph."""
-        #     payoff_matrix = {}
-        #     strategies = set(graph.genotype_valuecounts.keys())
-        #     for strategy in strategies:
-        #         payoff_matrix[strategy] = {}
-        #         for opponent_strategy in strategies:
-        #             payoff_matrix[strategy][opponent_strategy] = random.uniform(0, 1)
-
-        #     return payoff_matrix
-
-        fitness_values = [
-            self._calculate_fitness(node.genotype) for node in self.graph.nodes
-        ]
-        total_fitness = sum(fitness_values)
+    def _select_node(self):
+        """Select an node probabilistically (probabilities proportional to fitness) for reproduction."""
+        node_fitness_values = self._calculate_fitness_per_node().values()
+        total_fitness = sum(node_fitness_values)
         selection_probabilities = [
-            fitness / total_fitness for fitness in fitness_values
+            fitness / total_fitness for fitness in node_fitness_values
         ]
         selected_node = random.choices(list(self.graph.nodes), selection_probabilities)[
             0
         ]
         return selected_node
 
-    def _calculate_fitness(self, genotype: str):
-        """Calculate the fitness of a genotype."""
-        # TODO: Add proper fitness function based on match-up outcomes between genotypes
-        return len(genotype)
+    def _calculate_fitness_per_node(self) -> dict[str, float]:
+        node_fitnesses = {}
+        for node in self.graph.nodes:
+            node_fitnesses[node] = 0
+            adj_genotype_valuecounts = dict(
+                Counter([node.genotype for node in self.graph.get_adjacent_nodes(node)])
+            )
+
+            for neighbor_genotype in adj_genotype_valuecounts.keys():
+                node_fitnesses[node] += (
+                    self.payoff_matrix[node.genotype][neighbor_genotype]
+                    * adj_genotype_valuecounts[neighbor_genotype]
+                )
+
+        return {
+            node: 1 - self.selection_intensity + self.selection_intensity * fitness
+            for node, fitness in node_fitnesses.items()
+        }
+
+    def _calculate_fitness_per_genotype(self) -> dict[str, float]:
+        genotype_fitnesses = {}
+        for node in self.graph.nodes:
+            genotype_fitnesses[node.genotype] = genotype_fitnesses.get(node.genotype, 0)
+            adj_genotype_valuecounts = dict(
+                Counter([node.genotype for node in self.graph.get_adjacent_nodes(node)])
+            )
+
+            for neighbor_genotype in adj_genotype_valuecounts.keys():
+                genotype_fitnesses[node.genotype] += (
+                    self.payoff_matrix[node.genotype][neighbor_genotype]
+                    * adj_genotype_valuecounts[neighbor_genotype]
+                )
+
+        return {
+            genotype: 1 - self.selection_intensity + self.selection_intensity * fitness
+            for genotype, fitness in genotype_fitnesses.items()
+        }
+
+    @staticmethod
+    def _generate_random_payoff_matrix(graph: Graph) -> PayoffMatrixType:
+        """Generate a random payoff matrix based strategies in Graph."""
+        payoff_matrix = {}
+        strategies = set(graph.genotype_valuecounts.keys())
+        for strategy in strategies:
+            payoff_matrix[strategy] = {}
+            for opponent_strategy in strategies:
+                payoff_matrix[strategy][opponent_strategy] = random.uniform(0, 1)
+        return payoff_matrix
