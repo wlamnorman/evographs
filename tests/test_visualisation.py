@@ -1,7 +1,7 @@
 import unittest
 from evographs.graph import Graph, Node
 from evographs.visualisation import convert_to_networkx
-from evographs.moran_model import moran_model_simulation
+from evographs.moran_model import MoranModel
 from collections import Counter
 
 
@@ -22,7 +22,12 @@ class TestConvertToNetworkX(unittest.TestCase):
         graph = Graph.generate_random_graph(
             n_nodes=10, n_genotypes=2, edge_probability=1
         )
-        population_history = moran_model_simulation(graph, n_generations=10)
+        payoff_matrix = MoranModel._generate_random_payoff_matrix(graph)
+        population_history = (
+            MoranModel(graph, payoff_matrix, selection_intensity=1)
+            .run_simulation()
+            .population_history
+        )
 
         for g in population_history:
             nx_graph = convert_to_networkx(g)
